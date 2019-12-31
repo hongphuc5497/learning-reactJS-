@@ -1,13 +1,13 @@
 import React from 'react';
 import Square from './Square';
-import calcWinner from "../../../utils/calcWinner";
+import calcWinner from "../../../utils/common.js";
 class Board extends React.Component {
   constructor() {
     super();
 
     this.state = {
       squares: Array(9).fill(null),
-      xIsNext: true, 
+      xIsNext: true
     };
   }
 
