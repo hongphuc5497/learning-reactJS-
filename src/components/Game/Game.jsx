@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import Board from './Board';
 import calcWinner from '../../utils/common';
 
@@ -49,12 +49,13 @@ class Game extends React.Component {
     const stepNumber = this.state.stepNumber;
     const history = this.state.history;
     const current = history[stepNumber];
+    console.log(current)
     const winner  = calcWinner(current.squares);
-
+    
     const moves = history.map((_step, move) => {
       const desc = move ? 'Go to move #' + move : 'Go to  game start';
       
-      return (
+      return ( 
         <li key={move}>
           <button onClick={() => this.jumpTo(move)}>
             {desc}
@@ -62,7 +63,7 @@ class Game extends React.Component {
         </li>
       );
     });
-
+    
     let status = winner ? 'Winner: ' + winner : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
     return (
