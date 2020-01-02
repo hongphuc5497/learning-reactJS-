@@ -10,20 +10,22 @@ class Game extends React.Component {
       history: [
         { squares: Array(9).fill(null) }
       ],
-      isNext: true
+      stepNumber: 0,
+      xIsNext: true
     };
   }
 
   handleClick(i) {
-    const isNext = this.state.isNext;
-    const history = this.state.history;
-    const current = this.history[history.length -1];
-    const squares = current.squares.slice();
+    const stepNumber = this.state.stepNumber;
+    const xIsNext    = this.state.xIsNext;
+    const history    = this.state.history.slice(0, stepNumber + 1);
+    const current    = history[history.length - 1];
+    const squares    = current.squares.slice();
 
     if (calcWinner(squares) || squares[i]) {
       return;
     }
-    squares[i] = this.state.isNext ? 'X' : 'O';
+    squares[i] = xIsNext ? 'X' : 'O';
 
     this.setState({
       history: history.concat([
@@ -31,26 +33,36 @@ class Game extends React.Component {
           squares: squares
         }
       ]),
-      isNext: !isNext
+      stepNumber: history.length,
+      xIsNext: !xIsNext
     });
+  }
+
+  jumpTo(step) {
+    this.setState({
+      stepNumber: step,
+      xIsNext: (step % 2) === 0
+    })
   }
   
   render() {
+    const stepNumber = this.state.stepNumber;
     const history = this.state.history;
-    const current = history[history.length - 1];
+    const current = history[stepNumber];
     const winner  = calcWinner(current.squares);
-    const moves = history.map((step, move) => {
-      const desc = move ? 'Go to move #' + move : 'Go to  game start';
 
+    const moves = history.map((_step, move) => {
+      const desc = move ? 'Go to move #' + move : 'Go to  game start';
+      
       return (
-        <li>
+        <li key={move}>
           <button onClick={() => this.jumpTo(move)}>
             {desc}
           </button>
         </li>
       );
-    })
-    
+    });
+
     let status = winner ? 'Winner: ' + winner : 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
     return (
@@ -61,6 +73,7 @@ class Game extends React.Component {
               onClick={(i) => this.handleClick(i)}
           />
         </div>
+
         <div className="game-info">
           <div>{status}</div>
           <ol>{moves}</ol>
